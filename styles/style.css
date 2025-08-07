@@ -1,0 +1,141 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    max-width: 1500px;
+    margin: auto;
+    padding: 40px 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #003057;
+    border-bottom: 2px solid #0072ce;
+    padding-bottom: 10px;
+}
+
+.page {
+    display: none;
+}
+.page.active {
+    display: block;
+}
+
+.image-options {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.image-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: border 0.3s;
+}
+.image-option.selected {
+    border-color: #0072ce;
+}
+.image-option img {
+    height: 500px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    display: block;
+}
+.image-option p {
+    margin: 10px 0 0;
+    font-weight: bold;
+}
+
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+button {
+    background-color: #0072ce;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.option-boxes {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+}
+.option-box {
+    padding: 15px 25px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    background-color: white;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s;
+}
+.option-box:hover {
+    border-color: #999;
+}
+.option-box.selected {
+    border-color: #0072ce;
+    background-color: #e6f0fb;
+    color: #003057;
+    font-weight: bold;
+}
+
+.position-box {
+    position: absolute;
+    width: 80px; /* adjust if needed */
+    height: 80px;
+    background-color: transparent;
+    border: 2px dashed rgba(0, 0, 0, 0.2); /* faint dashed border */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .position-box.selected {
+        border: 3px solid #0072ce; /* bright blue solid border when selected */
+    }
+    .position-box:hover {
+        border-color: rgba(0, 0, 0, 0.5); /* slightly darker on hover */
+    }
+
+
+#integrationTypePage .image-option img {
+    height: 250px;
+}
+.option-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.option-boxes[data-group="integrate"] {
+    display: flex;
+    gap: 40px;
+}
+.image-option.multi-select.selected {
+    border: 2px solid #0072ce;
+    background-color: #e6f0fb;
+}
