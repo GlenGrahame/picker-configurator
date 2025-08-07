@@ -1,5 +1,3 @@
-// scripts/main.js
-
 import {
     initInteractions,
     selectPlatform,
@@ -17,7 +15,7 @@ window.addEventListener('DOMContentLoaded', () => {
     initInteractions();
 });
 
-// Expose functions to global window object for HTML inline onclicks
+// Expose to global window for HTML to access
 window.selectPlatform = selectPlatform;
 window.handleIntegrationNext = handleIntegrationNext;
 window.handleSourceAutoNext = handleSourceAutoNext;
