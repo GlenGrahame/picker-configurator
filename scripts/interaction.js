@@ -142,7 +142,7 @@ export function selectSourceAutoOption(value) {
     boxes.forEach(box => box.classList.remove('selected'));
     document.querySelector(`[data-group="sourceAuto"] .option-box:nth-child(${value === 'yes' ? 1 : 2})`).classList.add('selected');
     document.getElementById('sourceAutoNext').disabled = false;
-    document.getElementById('sourceImage').src = value === 'yes' ? 'images/K6-Trey.png' : 'images/K6-only.png';
+    document.getElementById('sourceImage').src = value === 'yes' ? 'Images/K6-Trey.png' : 'Images/K6-only.png';
 }
 
 export function handleSourceAutoNext() {
@@ -171,10 +171,10 @@ export function selectDestinationAutomation(value) {
 
     if (value === 'yes') {
         container.style.display = 'block';
-        image.src = 'images/Hive1.png';
+        image.src = 'Images/Hive1.png';
     } else {
         container.style.display = 'none';
-        image.src = 'images/K6-only.png';
+        image.src = 'Images/K6-only.png';
     }
 }
 
@@ -185,8 +185,9 @@ export function handleSourceDestAuto() {
 export function handleDualDestinationToggle() {
     const checkbox = document.getElementById('dualDestToggle');
     const image = document.getElementById('destinationImage');
-    image.src = checkbox.checked ? 'images/Hive2.png' : 'images/Hive1.png';
+    image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
 }
+
 
 
 
