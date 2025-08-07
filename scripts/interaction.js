@@ -137,7 +137,7 @@ function selectSourceAutoOption(value) {
     boxes.forEach(box => box.classList.remove('selected'));
     document.querySelector(`[data-group="sourceAuto"] .option-box:nth-child(${value === 'yes' ? 1 : 2})`).classList.add('selected');
     document.getElementById('sourceAutoNext').disabled = false;
-    document.getElementById('sourceImage').src = value === 'yes' ? 'images/k6-Trey.png' : 'images/k6-only.png';
+    document.getElementById('sourceImage').src = value === 'yes' ? 'images/K6-Trey.png' : 'images/K6-only.png';
 }
 
 function handleSourceAutoNext() {
@@ -169,7 +169,7 @@ function selectDestinationAutomation(value) {
         image.src = 'images/Hive1.png';
     } else {
         container.style.display = 'none';
-        image.src = 'images/k6-only.png';
+        image.src = 'images/K6-only.png';
     }
 }
 
@@ -182,4 +182,5 @@ function handleDualDestinationToggle() {
     const image = document.getElementById('destinationImage');
     image.src = checkbox.checked ? 'images/Hive2.png' : 'images/Hive1.png';
 }
+
 
