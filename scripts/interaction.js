@@ -35,7 +35,7 @@ export function initInteractions() {
     });
 }
 
-function selectOption(value, group) {
+export function selectOption(value, group) {
     selections[group] = value;
     const boxes = document.querySelectorAll(`.option-boxes[data-group="${group}"] .option-box`);
     boxes.forEach(box => {
@@ -50,7 +50,7 @@ function selectOption(value, group) {
     }
 }
 
-function handleIntegrationNext() {
+export function handleIntegrationNext() {
     if (selections['integrate'] === 'yes') {
         showPage('integrationTypePage');
     } else {
@@ -58,7 +58,7 @@ function handleIntegrationNext() {
     }
 }
 
-function selectIntegration(type) {
+export function selectIntegration(type) {
     setIntegrationType(type);
     document.querySelectorAll('#integrationTypePage .image-option').forEach(opt => {
         opt.classList.remove('selected');
@@ -69,7 +69,7 @@ function selectIntegration(type) {
     document.getElementById("integrationTypeNext").disabled = false;
 }
 
-function showNextFromIntegrationType() {
+export function showNextFromIntegrationType() {
     if (["source", "destination", "both"].includes(selectedIntegrationType)) {
         showPositionSelectionPage();
     } else {
@@ -77,7 +77,7 @@ function showNextFromIntegrationType() {
     }
 }
 
-function showPositionSelectionPage() {
+export function showPositionSelectionPage() {
     showPage("positionSelectionPage");
     resetPositions();
     document.querySelectorAll(".position-box").forEach(box => box.classList.remove("selected"));
@@ -101,7 +101,7 @@ function showPositionSelectionPage() {
     });
 }
 
-function handlePositionSelect(id) {
+export function handlePositionSelect(id) {
     const isSource = (id === 'left' || id === 'rear-left');
     const isDestination = (id === 'right' || id === 'rear-right');
     const group = isSource ? 'source' : 'destination';
@@ -121,7 +121,7 @@ function handlePositionSelect(id) {
     document.getElementById('positionNext').disabled = !valid;
 }
 
-function handlePositionNext() {
+export function handlePositionNext() {
     if (selectedIntegrationType === 'destination') {
         showPage('sourceAutomationPage');
     } else if (selectedIntegrationType === 'source') {
@@ -131,7 +131,7 @@ function handlePositionNext() {
     }
 }
 
-function selectSourceAutoOption(value) {
+export function selectSourceAutoOption(value) {
     selections['sourceAuto'] = value;
     const boxes = document.querySelectorAll('[data-group="sourceAuto"] .option-box');
     boxes.forEach(box => box.classList.remove('selected'));
@@ -140,7 +140,7 @@ function selectSourceAutoOption(value) {
     document.getElementById('sourceImage').src = value === 'yes' ? 'images/K6-Trey.png' : 'images/K6-only.png';
 }
 
-function handleSourceAutoNext() {
+export function handleSourceAutoNext() {
     const choice = selections['sourceAuto'];
 
     if (choice === 'yes') {
@@ -154,7 +154,7 @@ function handleSourceAutoNext() {
     }
 }
 
-function selectDestinationAutomation(value) {
+export function selectDestinationAutomation(value) {
     selections['sourceDestAuto'] = value;
     const boxes = document.querySelectorAll('[data-group="sourceDestAuto"] .option-box');
     boxes.forEach(box => box.classList.remove('selected'));
@@ -173,14 +173,15 @@ function selectDestinationAutomation(value) {
     }
 }
 
-function handleSourceDestAuto() {
+export function handleSourceDestAuto() {
     showPage('optionsPage');
 }
 
-function handleDualDestinationToggle() {
+export function handleDualDestinationToggle() {
     const checkbox = document.getElementById('dualDestToggle');
     const image = document.getElementById('destinationImage');
     image.src = checkbox.checked ? 'images/Hive2.png' : 'images/Hive1.png';
 }
+
 
 
