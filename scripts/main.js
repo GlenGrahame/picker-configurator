@@ -23,6 +23,3 @@ window.handleSourceDestAuto = handleSourceDestAuto;
 window.showNextFromIntegrationType = showNextFromIntegrationType;
 window.handlePositionNext = handlePositionNext;
 window.showPage = showPage;
-
-
-
