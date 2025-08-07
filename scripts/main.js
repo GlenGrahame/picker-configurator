@@ -1,12 +1,11 @@
-import {
-    initInteractions,
-    selectPlatform,
-    handleIntegrationNext,
-    handleSourceAutoNext,
-    handleSourceDestAuto,
-    showNextFromIntegrationType,
-    handlePositionNext
-} from './interaction.js';
++ import {
++     initInteractions,
++     handleIntegrationNext,
++     handleSourceAutoNext,
++     handleSourceDestAuto,
++     showNextFromIntegrationType,
++     handlePositionNext
++ } from './interaction.js';
 
 import { initNavigation, showPage } from './navigation.js';
 
@@ -23,3 +22,4 @@ window.handleSourceDestAuto = handleSourceDestAuto;
 window.showNextFromIntegrationType = showNextFromIntegrationType;
 window.handlePositionNext = handlePositionNext;
 window.showPage = showPage;
+
