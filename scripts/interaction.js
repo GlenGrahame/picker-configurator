@@ -3,6 +3,11 @@
 import { selections, selectedPositions, selectedIntegrationType, setIntegrationType, resetPositions } from './state.js';
 import { showPage } from './navigation.js';
 
+export function selectPlatform(type) {
+    selections['platform'] = type;
+    document.getElementById("platformNext").disabled = false;
+}
+
 export function initInteractions() {
     document.querySelectorAll('[data-group="integrate"] .option-box').forEach(box => {
         box.addEventListener('click', () => {
@@ -182,6 +187,7 @@ export function handleDualDestinationToggle() {
     const image = document.getElementById('destinationImage');
     image.src = checkbox.checked ? 'images/Hive2.png' : 'images/Hive1.png';
 }
+
 
 
 
