@@ -6,6 +6,14 @@ import { showPage } from './navigation.js';
 export function selectPlatform(type) {
     selections['platform'] = type;
     document.getElementById("platformNext").disabled = false;
+
+    // Remove "selected" class from all options
+    document.querySelectorAll('.image-option').forEach(opt => {
+        opt.classList.remove('selected');
+    });
+
+    // Add "selected" class to the clicked one
+    document.getElementById(`${type.toLowerCase()}-option`).classList.add('selected');
 }
 
 export function initInteractions() {
@@ -187,6 +195,7 @@ export function handleDualDestinationToggle() {
     const image = document.getElementById('destinationImage');
     image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
 }
+
 
 
 
