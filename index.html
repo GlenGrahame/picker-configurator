@@ -13,24 +13,26 @@
 
     <!-- Page Sections -->
     <div id="app">
-        <div class="page active" id="platformPage">
-            <h2>Choose Platform Type</h2>
-<div class="image-option" id="k6-option" onclick="selectPlatform('K6')">
-    <img src="Images/K6-only.png" alt="K6" />
-    <p>K6<sup>3</sup></p>
+<div class="page active" id="platformPage">
+    <h2>Choose Platform Type</h2>
+
+    <div class="image-option" id="k6-option" onclick="selectPlatform('K6')">
+        <img src="Images/K6-only.png" alt="K6" />
+        <p>K6<sup>3</sup></p>
+    </div>
+
+    <div class="image-option" id="k8-option" onclick="selectPlatform('K8')">
+        <img src="Images/K8-only.png" alt="K8" />
+        <p>K8</p>
+    </div>
+
+    <!-- ✅ THIS was outside before -->
+    <div class="nav-buttons">
+        <span></span>
+        <button onclick="showPage('integrationPage')" id="platformNext" disabled>Next</button>
+    </div>
 </div>
 
-<div class="image-option" id="k8-option" onclick="selectPlatform('K8')">
-    <img src="Images/K8-only.png" alt="K8" />
-    <p>K8</p>
-</div>
-
-            </div>
-            <div class="nav-buttons">
-                <span></span>
-                <button onclick="showPage('integrationPage')" id="platformNext" disabled>Next</button>
-            </div>
-        </div>
 
         <div class="page" id="integrationPage">
             <img src="Images/Integrate.png" alt="Integration Diagram" style="height: 300px; width: auto; display: block; margin: 20px auto;" />
@@ -149,6 +151,7 @@
     </div>
 </body>
 </html>
+
 
 
 
