@@ -324,4 +324,8 @@ export function handleDualDestinationToggle() {
   image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
   updateRouteBadge();
 }
+export function handleSourcePlateTypeNext() {
+    nextWithOverrides('sourceDestAutomationPage');
+}
+
 
