@@ -71,7 +71,7 @@ function updateRouteBadge() {
   const code = computeRouteCode();
   window.__routeCode = code;
   const el = document.getElementById('routeCodeBadge');
-  if (el) el.textContent = `Code: ${code} | Build #7`; // match the number in index.html
+  if (el) el.textContent = `Code: ${code} | Build #8`; // match the number in index.html
 }
 
 /* ---------------- Route overrides ---------------- */
@@ -79,8 +79,8 @@ function updateRouteBadge() {
 // Map: routeCode -> { currentPageId: targetPageId, '*' : fallbackTarget }
 const routeOverrides = {
   'L82O9R': {
-    '*': 'sourceTreySelectionPage',            // first hop
-    'sourceTreySelectionPage': 'optionsPage',  // then to options
+    '*': 'sourcePlateTypePage',        // first hop
+    'sourcePlateTypePage': 'optionsPage', // then to options
   },
 };
 
@@ -89,7 +89,6 @@ export function nextWithOverrides(defaultNext) {
   const current = document.querySelector('.page.active')?.id;
   const map = routeOverrides[code];
   const target = map?.[current] || map?.['*'] || defaultNext;
-  // console.log('NAV', { code, current, defaultNext, target });
   showPage(target);
 }
 
@@ -118,7 +117,6 @@ export function initInteractions() {
   document.querySelectorAll('[data-group="integrate"] .option-box').forEach(box => {
     box.addEventListener('click', () => {
       selectOption(box.textContent.trim().toLowerCase(), 'integrate');
-      
     });
   });
 
@@ -130,32 +128,34 @@ export function initInteractions() {
   });
 
   // Nav
+  document.getElementById('platformNext')?.addEventListener('click', handlePlatformNext);
   document.getElementById('integrationDecisionNext')?.addEventListener('click', handleIntegrationNext);
   document.getElementById('integrationTypeNext')?.addEventListener('click', showNextFromIntegrationType);
   document.getElementById('positionNext')?.addEventListener('click', handlePositionNext);
+  document.getElementById('sourceAutoNext')?.addEventListener('click', handleSourceAutoNext);
+  document.getElementById('sourcePlateTypeNext')?.addEventListener('click', handleSourcePlateTypeNext);
+  document.getElementById('sourceDestAutoNext')?.addEventListener('click', handleSourceDestAuto);
 
   // Source automation yes/no
   document.querySelectorAll('[data-group="sourceAuto"] .option-box').forEach((box, idx) => {
     box.addEventListener('click', () => selectSourceAutoOption(idx === 0 ? 'yes' : 'no'));
   });
-  document.getElementById('sourceAutoNext')?.addEventListener('click', handleSourceAutoNext);
 
   // Destination automation yes/no
-  document.getElementById('sourceDestAutoNext')?.addEventListener('click', handleSourceDestAuto);
-  document.getElementById('dualDestToggle')?.addEventListener('change', handleDualDestinationToggle);
-
   document.querySelectorAll('[data-group="sourceDestAuto"] .option-box').forEach((box, idx) => {
     box.addEventListener('click', () => selectDestinationAutomation(idx === 0 ? 'yes' : 'no'));
   });
+
+  document.getElementById('dualDestToggle')?.addEventListener('change', handleDualDestinationToggle);
 
   // Multi-select source plate types
   document.querySelectorAll('#sourcePlateTypePage .multi-select').forEach(el => {
     el.addEventListener('click', () => el.classList.toggle('selected'));
   });
-    // Options page buttons
+
+  // Options page buttons
   document.getElementById('optionsBack')?.addEventListener('click', () => showPage('platformPage'));
   document.getElementById('optionsFinish')?.addEventListener('click', () => alert('Finished (placeholder)'));
-
 
   updateRouteBadge();
 }
@@ -346,5 +346,3 @@ export function handleDualDestinationToggle() {
   image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
   updateRouteBadge();
 }
-
-
