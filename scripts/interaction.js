@@ -118,6 +118,7 @@ export function initInteractions() {
   document.querySelectorAll('[data-group="integrate"] .option-box').forEach(box => {
     box.addEventListener('click', () => {
       selectOption(box.textContent.trim().toLowerCase(), 'integrate');
+      
     });
   });
 
@@ -151,6 +152,10 @@ export function initInteractions() {
   document.querySelectorAll('#sourcePlateTypePage .multi-select').forEach(el => {
     el.addEventListener('click', () => el.classList.toggle('selected'));
   });
+    // Options page buttons
+  document.getElementById('optionsBack')?.addEventListener('click', () => showPage('platformPage'));
+  document.getElementById('optionsFinish')?.addEventListener('click', () => alert('Finished (placeholder)'));
+
 
   updateRouteBadge();
 }
@@ -341,4 +346,5 @@ export function handleDualDestinationToggle() {
   image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
   updateRouteBadge();
 }
+
 
