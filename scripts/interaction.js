@@ -80,7 +80,10 @@ function updateRouteBadge() {
 
 // Map: routeCode -> { currentPageId: targetPageId, '*' : fallbackTarget }
 const routeOverrides = {
-  'L82O9R': { '*': 'optionsPage' }, // your requested override
+  'L82O9R': {
+    '*': 'sourceTreySelectionPage', // default for any page
+    'sourceTreySelectionPage': 'optionsPage' // special case after trey selection
+  },
 };
 
 // Use this when navigating to allow route overrides
@@ -321,3 +324,4 @@ export function handleDualDestinationToggle() {
   image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
   updateRouteBadge();
 }
+
