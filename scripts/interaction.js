@@ -1,331 +1,185 @@
-// scripts/interaction.js
+<!-- picker_configurator.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Picker Configurator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/style.css">
+  <script type="module" src="scripts/main.js"></script>
+</head>
+<body>
+  <h1>Picker Configurator</h1>
 
-import {
-  selections,
-  selectedPositions,
-  selectedIntegrationType,
-  setIntegrationType,
-  resetPositions
-} from './state.js';
-import { showPage } from './navigation.js';
+  <div id="app">
+    <!-- Platform Page -->
+    <div class="page active" id="platformPage">
+      <h2>Choose Platform Type</h2>
 
-/* ---------------- Route code helpers ---------------- */
+      <div class="image-options">
+        <div class="image-option" id="k6-option" onclick="selectPlatform('K6')">
+          <img src="Images/K6-only.png" alt="K6" />
+          <p>K6<sup>3</sup></p>
+        </div>
 
-function getRouteState() {
-  return {
-    platform: selections.platform || null,
-    integrate: selections.integrate || null,
-    integrationType:
-      (typeof selectedIntegrationType === 'string' && selectedIntegrationType) || null,
-    sourceAuto: selections.sourceAuto || null,
-    destAuto: selections.sourceDestAuto || null,
-    posSource: selectedPositions?.source || null,
-    posDest: selectedPositions?.destination || null,
-  };
-}
+        <div class="image-option" id="k8-option" onclick="selectPlatform('K8')">
+          <img src="Images/K8-only.png" alt="K8" />
+          <p>K8</p>
+        </div>
+      </div>
 
-// Compact, deterministic 6-char code from a stable key
-function computeRouteCode() {
-  const s = getRouteState();
-  const key = [
-    `P:${s.platform || '-'}`,
-    `I:${s.integrate || '-'}`,
-    `T:${s.integrationType || '-'}`,
-    `SA:${s.sourceAuto || '-'}`,
-    `DA:${s.destAuto || '-'}`,
-    `S:${s.posSource || '-'}`,
-    `D:${s.posDest || '-'}`,
-  ].join('|');
+      <div class="nav-buttons">
+        <span></span>
+        <!-- Use a handler that calls nextWithOverrides under the hood -->
+        <button onclick="handlePlatformNext()" id="platformNext" disabled>Next</button>
+      </div>
+    </div>
 
-  let h = 2166136261 >>> 0;
-  for (let i = 0; i < key.length; i++) {
-    h ^= key.charCodeAt(i);
-    h = Math.imul(h, 16777619);
-  }
-  return h.toString(36).slice(-6).toUpperCase(); // e.g. "3F9K2Q"
-}
+    <!-- Integration Page -->
+    <div class="page" id="integrationPage">
+      <img src="Images/Integrate.png" alt="Integration Diagram" style="height: 300px; width: auto; display: block; margin: 20px auto;" />
+      <h2 style="text-align: center;">Do you want to integrate your Source or Destination Plates?</h2>
 
-function ensureRouteBadge() {
-  if (document.getElementById('routeCodeBadge')) return;
-  const el = document.createElement('button');
-  el.id = 'routeCodeBadge';
-  el.style.position = 'fixed';
-  el.style.right = '12px';
-  el.style.bottom = '12px';
-  el.style.padding = '6px 10px';
-  el.style.border = '1px solid #ccc';
-  el.style.background = '#fff';
-  el.style.borderRadius = '8px';
-  el.style.fontSize = '12px';
-  el.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
-  el.style.cursor = 'pointer';
-  el.title = 'Click to copy code';
-  el.onclick = async () => {
-    await navigator.clipboard.writeText(el.textContent.replace('Code: ', '').trim());
-    el.textContent = el.textContent + ' ✓';
-    setTimeout(updateRouteBadge, 800);
-  };
-  document.body.appendChild(el);
-}
+      <div class="option-wrapper">
+        <div class="option-boxes" data-group="integrate">
+          <div class="option-box">Yes</div>
+          <div class="option-box">No</div>
+        </div>
+      </div>
 
-function updateRouteBadge() {
-  ensureRouteBadge();
-  const code = computeRouteCode();
-  window.__routeCode = code; // exposed for debugging/overrides if needed
-  const el = document.getElementById('routeCodeBadge');
-  if (el) el.textContent = `Code: ${code}`;
-}
+      <div class="nav-buttons">
+        <button onclick="showPage('platformPage')">Back</button>
+        <button onclick="handleIntegrationNext()" id="integrationDecisionNext" disabled>Next</button>
+      </div>
+    </div>
 
-/* ---------------- Route overrides ---------------- */
+    <!-- Integration Type Page -->
+    <div class="page" id="integrationTypePage">
+      <h2>What would you like to integrate?</h2>
+      <div class="image-options">
+        <div class="image-option" data-type="source">
+          <img src="Images/source.png" alt="Source only" />
+          <p>Source only</p>
+        </div>
+        <div class="image-option" data-type="destination">
+          <img src="Images/destination.png" alt="Destination only" />
+          <p>Destination only</p>
+        </div>
+        <div class="image-option" data-type="both">
+          <img src="Images/both.png" alt="Both" />
+          <p>Both</p>
+        </div>
+        <div class="image-option" data-type="fixed">
+          <img src="Images/fixed.png" alt="Fixed Deck" />
+          <p>Fixed Deck</p>
+        </div>
+      </div>
 
-// Map: routeCode -> { currentPageId: targetPageId, '*' : fallbackTarget }
-const routeOverrides = {
-  'L82O9R': {
-    '*': 'sourceTreySelectionPage', // default for any page
-    'sourceTreySelectionPage': 'optionsPage' // special case after trey selection
-  },
-};
+      <div class="nav-buttons">
+        <button onclick="showPage('integrationPage')">Back</button>
+        <button onclick="showNextFromIntegrationType()" id="integrationTypeNext" disabled>Next</button>
+      </div>
+    </div>
 
-// Use this when navigating to allow route overrides
-export function nextWithOverrides(defaultNext) {
-  const code = window.__routeCode;
-  const current = document.querySelector('.page.active')?.id;
-  const map = routeOverrides[code];
-  const target = map?.[current] || map?.['*'] || defaultNext;
-  showPage(target);
-}
+    <!-- Position Selection Page -->
+    <div class="page" id="positionSelectionPage">
+      <h2>Select Source and/or Destination Positions</h2>
+      <div id="positionWrapper" style="position: relative; max-width: 800px; margin: auto;">
+        <img src="Images/top.png" alt="Plate Layout" style="width: 100%; border-radius: 8px; border: 2px solid #ccc;" />
+        <div id="left" class="position-box" style="top: 50%; left: 8%;"></div>
+        <div id="rear-left" class="position-box" style="top: 5%; left: 35%;"></div>
+        <div id="right" class="position-box" style="top: 50%; right: 5%;"></div>
+        <div id="rear-right" class="position-box" style="top: 5%; right: 35%;"></div>
+      </div>
 
-/* ---------------- Interactions ---------------- */
+      <div class="nav-buttons">
+        <button onclick="showPage('integrationTypePage')">Back</button>
+        <button onclick="handlePositionNext()" id="positionNext" disabled>Next</button>
+      </div>
+    </div>
 
-export function selectPlatform(type) {
-  selections['platform'] = type;
-  document.getElementById('platformNext').disabled = false;
+    <!-- Source Automation Page -->
+    <div class="page" id="sourceAutomationPage">
+      <h2>Do you want to automate source plate handling?</h2>
+      <img id="sourceImage" src="Images/K6-only.png" alt="Source Handling" style="height: 450px; width: auto; display: block; margin: 20px auto;" />
+      <div class="option-boxes" data-group="sourceAuto">
+        <div class="option-box">Yes</div>
+        <div class="option-box">No</div>
+      </div>
 
-  // Visual selection
-  document.querySelectorAll('.image-option').forEach(opt => opt.classList.remove('selected'));
-  document.getElementById(`${type.toLowerCase()}-option`)?.classList.add('selected');
+      <div class="nav-buttons">
+        <button onclick="showPage('positionSelectionPage')">Back</button>
+        <button id="sourceAutoNext" onclick="handleSourceAutoNext()" disabled>Next</button>
+      </div>
+    </div>
 
-  updateRouteBadge();
-}
+    <!-- Source Plate Type Page -->
+    <div class="page" id="sourcePlateTypePage">
+      <h2>Select Source Plate Types</h2>
+      <div class="image-options">
+        <div class="image-option multi-select">
+          <img src="Images/bioassay.png" alt="Bioassay Plate" />
+          <p>Bioassay</p>
+        </div>
+        <div class="image-option multi-select">
+          <img src="Images/omni.png" alt="Omni Plate" />
+          <p>Omni</p>
+        </div>
+        <div class="image-option multi-select">
+          <img src="Images/150mmpetri.png" alt="150mm Petri" />
+          <p>150mm Petri</p>
+        </div>
+        <div class="image-option multi-select">
+          <img src="Images/80mmpetri.png" alt="80mm Petri" />
+          <p>80mm Petri</p>
+        </div>
+      </div>
 
-export function initInteractions() {
-  // “Integrate?” yes/no
-  document.querySelectorAll('[data-group="integrate"] .option-box').forEach(box => {
-    box.addEventListener('click', () => {
-      selectOption(box.textContent.trim().toLowerCase(), 'integrate');
-    });
-  });
+      <div class="nav-buttons">
+        <button onclick="showPage('sourceAutomationPage')">Back</button>
+        <!-- Important: use a handler that respects overrides -->
+        <button onclick="handleSourcePlateTypeNext()">Next</button>
+      </div>
+    </div>
 
-  // Integration type images
-  document.querySelectorAll('#integrationTypePage .image-option').forEach(opt => {
-    opt.addEventListener('click', () => {
-      selectIntegration(opt.dataset.type);
-    });
-  });
+    <!-- Destination Automation Page -->
+    <div class="page" id="sourceDestAutomationPage">
+      <h2>Do you want to automate destination plate handling?</h2>
+      <img id="destinationImage" src="Images/K6-only.png" alt="Destination Handling" style="height: 450px; display: block; margin: 20px auto;" />
+      <div class="option-boxes" data-group="sourceDestAuto">
+        <div class="option-box">Yes</div>
+        <div class="option-box">No</div>
+      </div>
 
-  // Nav
-  document.getElementById('integrationDecisionNext')?.addEventListener('click', handleIntegrationNext);
-  document.getElementById('integrationTypeNext')?.addEventListener('click', showNextFromIntegrationType);
-  document.getElementById('positionNext')?.addEventListener('click', handlePositionNext);
+      <div id="dualDestContainer" style="display:none; text-align:center; margin-top: 20px;">
+        <h3>Use 2 Destination Positions?</h3>
+        <label>
+          <input type="checkbox" id="dualDestToggle">
+          <span>Enable</span>
+        </label>
+      </div>
 
-  // Source automation yes/no
-  document.querySelectorAll('[data-group="sourceAuto"] .option-box').forEach((box, idx) => {
-    box.addEventListener('click', () => selectSourceAutoOption(idx === 0 ? 'yes' : 'no'));
-  });
-  document.getElementById('sourceAutoNext')?.addEventListener('click', handleSourceAutoNext);
+      <div class="nav-buttons">
+        <button onclick="showPage('sourcePlateTypePage')">Back</button>
+        <button id="sourceDestAutoNext" onclick="handleSourceDestAuto()" disabled>Next</button>
+      </div>
+    </div>
 
-  // Destination automation yes/no
-  document.getElementById('sourceDestAutoNext')?.addEventListener('click', handleSourceDestAuto);
-  document.getElementById('dualDestToggle')?.addEventListener('change', handleDualDestinationToggle);
+    <!-- NEW: Source Trey Selection Page (placeholder) -->
+    <div class="page" id="sourceTreySelectionPage">
+      <h2>Source Trey Selection</h2>
+      <p>Placeholder — UI goes here later.</p>
+      <div class="nav-buttons">
+        <button onclick="showPage('sourcePlateTypePage')">Back</button>
+        <button onclick="handleSourceTreyNext()">Next</button>
+      </div>
+    </div>
 
-  document.querySelectorAll('[data-group="sourceDestAuto"] .option-box').forEach((box, idx) => {
-    box.addEventListener('click', () => selectDestinationAutomation(idx === 0 ? 'yes' : 'no'));
-  });
-
-  // Multi-select source plate types
-  document.querySelectorAll('#sourcePlateTypePage .multi-select').forEach(el => {
-    el.addEventListener('click', () => el.classList.toggle('selected'));
-  });
-
-  updateRouteBadge();
-}
-
-export function selectOption(value, group) {
-  selections[group] = value;
-
-  const boxes = document.querySelectorAll(`.option-boxes[data-group="${group}"] .option-box`);
-  boxes.forEach(box => {
-    box.classList.remove('selected');
-    if (box.textContent.trim().toLowerCase() === value) {
-      box.classList.add('selected');
-    }
-  });
-
-  if (group === 'integrate') {
-    document.getElementById('integrationDecisionNext').disabled = false;
-  }
-
-  updateRouteBadge();
-}
-
-export function handleIntegrationNext() {
-  if (selections['integrate'] === 'yes') {
-    nextWithOverrides('integrationTypePage');
-  } else {
-    nextWithOverrides('sourceAutomationPage');
-  }
-  updateRouteBadge();
-}
-
-export function selectIntegration(type) {
-  setIntegrationType(type);
-
-  document.querySelectorAll('#integrationTypePage .image-option').forEach(opt => {
-    opt.classList.remove('selected');
-    if (opt.dataset.type === type) opt.classList.add('selected');
-  });
-
-  document.getElementById('integrationTypeNext').disabled = false;
-  updateRouteBadge();
-}
-
-export function showNextFromIntegrationType() {
-  if (['source', 'destination', 'both'].includes(selectedIntegrationType)) {
-    showPositionSelectionPage();
-  } else {
-    nextWithOverrides('optionsPage'); // still respects overrides
-  }
-  updateRouteBadge();
-}
-
-export function showPositionSelectionPage() {
-  showPage('positionSelectionPage');
-  resetPositions();
-  document.querySelectorAll('.position-box').forEach(box => box.classList.remove('selected'));
-  document.getElementById('positionNext').disabled = true;
-
-  const show = id => (document.getElementById(id).style.display = 'block');
-  const hide = id => (document.getElementById(id).style.display = 'none');
-
-  if (selectedIntegrationType === 'source') {
-    show('left'); show('rear-left'); hide('right'); hide('rear-right');
-  } else if (selectedIntegrationType === 'destination') {
-    show('right'); show('rear-right'); hide('left'); hide('rear-left');
-  } else if (selectedIntegrationType === 'both') {
-    show('left'); show('rear-left'); show('right'); show('rear-right');
-  } else {
-    hide('left'); hide('rear-left'); hide('right'); hide('rear-right');
-  }
-
-  document.querySelectorAll('.position-box').forEach(box => {
-    box.onclick = () => handlePositionSelect(box.id);
-  });
-
-  updateRouteBadge();
-}
-
-export function handlePositionSelect(id) {
-  const isSource = id === 'left' || id === 'rear-left';
-  const group = isSource ? 'source' : 'destination';
-
-  if (selectedPositions[group]) {
-    document.getElementById(selectedPositions[group]).classList.remove('selected');
-  }
-
-  selectedPositions[group] = id;
-  document.getElementById(id).classList.add('selected');
-
-  const valid =
-    (selectedIntegrationType === 'source' && selectedPositions.source) ||
-    (selectedIntegrationType === 'destination' && selectedPositions.destination) ||
-    (selectedIntegrationType === 'both' && selectedPositions.source && selectedPositions.destination);
-
-  document.getElementById('positionNext').disabled = !valid;
-
-  updateRouteBadge();
-}
-
-export function handlePositionNext() {
-  if (selectedIntegrationType === 'destination') {
-    nextWithOverrides('sourceAutomationPage');
-  } else if (selectedIntegrationType === 'source') {
-    nextWithOverrides('sourceDestAutomationPage');
-  } else {
-    nextWithOverrides('optionsPage');
-  }
-  updateRouteBadge();
-}
-
-export function selectSourceAutoOption(value) {
-  selections['sourceAuto'] = value;
-
-  const boxes = document.querySelectorAll('[data-group="sourceAuto"] .option-box');
-  boxes.forEach(box => box.classList.remove('selected'));
-  document
-    .querySelector(`[data-group="sourceAuto"] .option-box:nth-child(${value === 'yes' ? 1 : 2})`)
-    .classList.add('selected');
-
-  document.getElementById('sourceAutoNext').disabled = false;
-  document.getElementById('sourceImage').src =
-    value === 'yes' ? 'Images/K6-Trey.png' : 'Images/K6-only.png';
-
-  updateRouteBadge();
-}
-
-export function handleSourceAutoNext() {
-  const choice = selections['sourceAuto'];
-
-  if (choice === 'yes') {
-    nextWithOverrides('sourcePlateTypePage');
-  } else {
-    if (selectedIntegrationType === 'destination') {
-      nextWithOverrides('optionsPage');
-    } else {
-      nextWithOverrides('sourceDestAutomationPage');
-    }
-  }
-
-  updateRouteBadge();
-}
-
-export function selectDestinationAutomation(value) {
-  selections['sourceDestAuto'] = value;
-
-  const boxes = document.querySelectorAll('[data-group="sourceDestAuto"] .option-box');
-  boxes.forEach(box => box.classList.remove('selected'));
-  document
-    .querySelector(`[data-group="sourceDestAuto"] .option-box:nth-child(${value === 'yes' ? 1 : 2})`)
-    .classList.add('selected');
-
-  document.getElementById('sourceDestAutoNext').disabled = false;
-
-  const container = document.getElementById('dualDestContainer');
-  const image = document.getElementById('destinationImage');
-
-  if (value === 'yes') {
-    container.style.display = 'block';
-    image.src = 'Images/Hive1.png';
-  } else {
-    container.style.display = 'none';
-    image.src = 'Images/K6-only.png';
-  }
-
-  updateRouteBadge();
-}
-
-export function handleSourceDestAuto() {
-  nextWithOverrides('optionsPage');
-  updateRouteBadge();
-}
-
-export function handleDualDestinationToggle() {
-  const checkbox = document.getElementById('dualDestToggle');
-  const image = document.getElementById('destinationImage');
-  image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
-  updateRouteBadge();
-}
-export function handleSourcePlateTypeNext() {
-    nextWithOverrides('sourceDestAutomationPage');
-}
-
-
+    <!-- NEW: Options Page (placeholder) -->
+    <div class="page" id="optionsPage">
+      <h2>Options Page</h2>
+      <p>This is a placeholder for the options page. Content will go here later.</p>
+    </div>
+  </div>
+</body>
+</html>
