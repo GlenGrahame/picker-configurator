@@ -1,4 +1,4 @@
-<!-- picker_configurator.html -->
+<!-- Picker Configurator -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,8 +30,7 @@
 
       <div class="nav-buttons">
         <span></span>
-        <!-- Use a handler that calls nextWithOverrides under the hood -->
-        <button onclick="handlePlatformNext()" id="platformNext" disabled>Next</button>
+        <button id="platformNext" disabled>Next</button>
       </div>
     </div>
 
@@ -48,8 +47,8 @@
       </div>
 
       <div class="nav-buttons">
-        <button onclick="showPage('platformPage')">Back</button>
-        <button onclick="handleIntegrationNext()" id="integrationDecisionNext" disabled>Next</button>
+        <button id="integrationBack">Back</button>
+        <button id="integrationDecisionNext" disabled>Next</button>
       </div>
     </div>
 
@@ -76,8 +75,8 @@
       </div>
 
       <div class="nav-buttons">
-        <button onclick="showPage('integrationPage')">Back</button>
-        <button onclick="showNextFromIntegrationType()" id="integrationTypeNext" disabled>Next</button>
+        <button id="integrationTypeBack">Back</button>
+        <button id="integrationTypeNext" disabled>Next</button>
       </div>
     </div>
 
@@ -93,92 +92,46 @@
       </div>
 
       <div class="nav-buttons">
-        <button onclick="showPage('integrationTypePage')">Back</button>
-        <button onclick="handlePositionNext()" id="positionNext" disabled>Next</button>
+        <button id="positionBack">Back</button>
+        <button id="positionNext" disabled>Next</button>
       </div>
     </div>
 
     <!-- Source Automation Page -->
     <div class="page" id="sourceAutomationPage">
       <h2>Do you want to automate source plate handling?</h2>
-      <img id="sourceImage" src="Images/K6-only.png" alt="Source Handling" style="height: 450px; width: auto; display: block; margin: 20px auto;" />
-      <div class="option-boxes" data-group="sourceAuto">
-        <div class="option-box">Yes</div>
-        <div class="option-box">No</div>
-      </div>
-
+      <!-- source automation options here -->
       <div class="nav-buttons">
-        <button onclick="showPage('positionSelectionPage')">Back</button>
-        <button id="sourceAutoNext" onclick="handleSourceAutoNext()" disabled>Next</button>
+        <button id="sourceAutoBack">Back</button>
+        <button id="sourceAutoNext" disabled>Next</button>
       </div>
     </div>
 
     <!-- Source Plate Type Page -->
     <div class="page" id="sourcePlateTypePage">
       <h2>Select Source Plate Types</h2>
-      <div class="image-options">
-        <div class="image-option multi-select">
-          <img src="Images/bioassay.png" alt="Bioassay Plate" />
-          <p>Bioassay</p>
-        </div>
-        <div class="image-option multi-select">
-          <img src="Images/omni.png" alt="Omni Plate" />
-          <p>Omni</p>
-        </div>
-        <div class="image-option multi-select">
-          <img src="Images/150mmpetri.png" alt="150mm Petri" />
-          <p>150mm Petri</p>
-        </div>
-        <div class="image-option multi-select">
-          <img src="Images/80mmpetri.png" alt="80mm Petri" />
-          <p>80mm Petri</p>
-        </div>
-      </div>
-
+      <!-- plate type multi-selects here -->
       <div class="nav-buttons">
-        <button onclick="showPage('sourceAutomationPage')">Back</button>
-        <!-- Important: use a handler that respects overrides -->
-        <button onclick="handleSourcePlateTypeNext()">Next</button>
+        <button id="sourcePlateTypeBack">Back</button>
+        <button id="sourcePlateTypeNext" disabled>Next</button>
       </div>
     </div>
 
     <!-- Destination Automation Page -->
     <div class="page" id="sourceDestAutomationPage">
       <h2>Do you want to automate destination plate handling?</h2>
-      <img id="destinationImage" src="Images/K6-only.png" alt="Destination Handling" style="height: 450px; display: block; margin: 20px auto;" />
-      <div class="option-boxes" data-group="sourceDestAuto">
-        <div class="option-box">Yes</div>
-        <div class="option-box">No</div>
-      </div>
-
-      <div id="dualDestContainer" style="display:none; text-align:center; margin-top: 20px;">
-        <h3>Use 2 Destination Positions?</h3>
-        <label>
-          <input type="checkbox" id="dualDestToggle">
-          <span>Enable</span>
-        </label>
-      </div>
-
+      <!-- destination automation options here -->
       <div class="nav-buttons">
-        <button onclick="showPage('sourcePlateTypePage')">Back</button>
-        <button id="sourceDestAutoNext" onclick="handleSourceDestAuto()" disabled>Next</button>
+        <button id="sourceDestAutoBack">Back</button>
+        <button id="sourceDestAutoNext" disabled>Next</button>
       </div>
     </div>
 
-    <!-- NEW: Source Trey Selection Page (placeholder) -->
-    <div class="page" id="sourceTreySelectionPage">
-      <h2>Source Trey Selection</h2>
-      <p>Placeholder — UI goes here later.</p>
-      <div class="nav-buttons">
-        <button onclick="showPage('sourcePlateTypePage')">Back</button>
-        <button onclick="handleSourceTreyNext()">Next</button>
-      </div>
-    </div>
-
-    <!-- NEW: Options Page (placeholder) -->
+    <!-- Options Page -->
     <div class="page" id="optionsPage">
-      <h2>Options Page</h2>
-      <p>This is a placeholder for the options page. Content will go here later.</p>
+      <h2>Options</h2>
+      <p>Placeholder options page.</p>
+      <button id="optionsNext">Next</button>
     </div>
   </div>
 </body>
