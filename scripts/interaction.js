@@ -76,6 +76,22 @@ function updateRouteBadge() {
   if (el) el.textContent = `Code: ${code}`;
 }
 
+/* ---------------- Route overrides ---------------- */
+
+// Map: routeCode -> { currentPageId: targetPageId, '*' : fallbackTarget }
+const routeOverrides = {
+  'L82O9R': { '*': 'optionsPage' }, // your requested override
+};
+
+// Use this when navigating to allow route overrides
+export function nextWithOverrides(defaultNext) {
+  const code = window.__routeCode;
+  const current = document.querySelector('.page.active')?.id;
+  const map = routeOverrides[code];
+  const target = map?.[current] || map?.['*'] || defaultNext;
+  showPage(target);
+}
+
 /* ---------------- Interactions ---------------- */
 
 export function selectPlatform(type) {
@@ -151,9 +167,9 @@ export function selectOption(value, group) {
 
 export function handleIntegrationNext() {
   if (selections['integrate'] === 'yes') {
-    showPage('integrationTypePage');
+    nextWithOverrides('integrationTypePage');
   } else {
-    showPage('sourceAutomationPage');
+    nextWithOverrides('sourceAutomationPage');
   }
   updateRouteBadge();
 }
@@ -174,7 +190,7 @@ export function showNextFromIntegrationType() {
   if (['source', 'destination', 'both'].includes(selectedIntegrationType)) {
     showPositionSelectionPage();
   } else {
-    showPage('optionsPage');
+    nextWithOverrides('optionsPage'); // still respects overrides
   }
   updateRouteBadge();
 }
@@ -228,11 +244,11 @@ export function handlePositionSelect(id) {
 
 export function handlePositionNext() {
   if (selectedIntegrationType === 'destination') {
-    showPage('sourceAutomationPage');
+    nextWithOverrides('sourceAutomationPage');
   } else if (selectedIntegrationType === 'source') {
-    showPage('sourceDestAutomationPage');
+    nextWithOverrides('sourceDestAutomationPage');
   } else {
-    showPage('optionsPage');
+    nextWithOverrides('optionsPage');
   }
   updateRouteBadge();
 }
@@ -257,12 +273,12 @@ export function handleSourceAutoNext() {
   const choice = selections['sourceAuto'];
 
   if (choice === 'yes') {
-    showPage('sourcePlateTypePage');
+    nextWithOverrides('sourcePlateTypePage');
   } else {
     if (selectedIntegrationType === 'destination') {
-      showPage('optionsPage');
+      nextWithOverrides('optionsPage');
     } else {
-      showPage('sourceDestAutomationPage');
+      nextWithOverrides('sourceDestAutomationPage');
     }
   }
 
@@ -295,7 +311,7 @@ export function selectDestinationAutomation(value) {
 }
 
 export function handleSourceDestAuto() {
-  showPage('optionsPage');
+  nextWithOverrides('optionsPage');
   updateRouteBadge();
 }
 
