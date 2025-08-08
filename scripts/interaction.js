@@ -71,7 +71,7 @@ function updateRouteBadge() {
   const code = computeRouteCode();
   window.__routeCode = code;
   const el = document.getElementById('routeCodeBadge');
-  if (el) el.textContent = `Code: ${code}`;
+  if (el) el.textContent = `Code: ${code} | Build #7`; // match the number in index.html
 }
 
 /* ---------------- Route overrides ---------------- */
@@ -341,3 +341,4 @@ export function handleDualDestinationToggle() {
   image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
   updateRouteBadge();
 }
+
