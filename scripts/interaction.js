@@ -71,7 +71,7 @@ function updateRouteBadge() {
   const code = computeRouteCode();
   window.__routeCode = code;
   const el = document.getElementById('routeCodeBadge');
-  if (el) el.textContent = `Code: ${code} | Build #8`; // match the number in index.html
+  if (el) el.textContent = `Code: ${code}`;
 }
 
 /* ---------------- Route overrides ---------------- */
@@ -79,8 +79,8 @@ function updateRouteBadge() {
 // Map: routeCode -> { currentPageId: targetPageId, '*' : fallbackTarget }
 const routeOverrides = {
   'L82O9R': {
-    '*': 'sourcePlateTypePage',        // first hop
-    'sourcePlateTypePage': 'optionsPage', // then to options
+    '*': 'sourcePlateTypePage',
+    'sourcePlateTypePage': 'optionsPage',
   },
 };
 
@@ -98,7 +98,7 @@ export function selectPlatform(type) {
   selections['platform'] = type;
 
   const nextBtn = document.getElementById('platformNext');
-  if (nextBtn) nextBtn.disabled = false; // defensive
+  if (nextBtn) nextBtn.disabled = false;
 
   document.querySelectorAll('.image-option').forEach(opt => opt.classList.remove('selected'));
   document.getElementById(`${type.toLowerCase()}-option`)?.classList.add('selected');
@@ -106,7 +106,6 @@ export function selectPlatform(type) {
   updateRouteBadge();
 }
 
-// Platform page Next (uses overrides)
 export function handlePlatformNext() {
   nextWithOverrides('integrationPage');
   updateRouteBadge();
@@ -298,13 +297,11 @@ export function handleSourceAutoNext() {
   updateRouteBadge();
 }
 
-// Source Plate Types -> Next
 export function handleSourcePlateTypeNext() {
   nextWithOverrides('sourceDestAutomationPage');
   updateRouteBadge();
 }
 
-// Source Trey Selection -> Next
 export function handleSourceTreyNext() {
   nextWithOverrides('optionsPage');
   updateRouteBadge();
