@@ -99,14 +99,25 @@
     </div>
 
     <!-- Source Automation Page -->
-    <div class="page" id="sourceAutomationPage">
-      <h2>Do you want to automate source plate handling?</h2>
-      <!-- source automation options here -->
-      <div class="nav-buttons">
-        <button id="sourceAutoBack">Back</button>
-        <button id="sourceAutoNext" disabled>Next</button>
-      </div>
+<!-- Source Automation Page -->
+<div class="page" id="sourceAutomationPage">
+  <h2>Do you want to automate source plate handling?</h2>
+
+  <div class="image-and-options" style="display:flex; gap:24px; align-items:center; justify-content:center; margin:20px 0;">
+    <img id="sourceImage" src="Images/K6-only.png" alt="Source platform preview" style="max-width:360px; height:auto; border-radius:8px; border:1px solid #ccc;" />
+
+    <div class="option-boxes" data-group="sourceAuto" style="display:flex; gap:16px;">
+      <div class="option-box">Yes</div>
+      <div class="option-box">No</div>
     </div>
+  </div>
+
+  <div class="nav-buttons">
+    <button id="sourceAutoBack">Back</button>
+    <button id="sourceAutoNext" disabled>Next</button>
+  </div>
+</div>
+
 
     <!-- Source Plate Type Page -->
     <div class="page" id="sourcePlateTypePage">
@@ -141,6 +152,7 @@
 
 </body>
 </html>
+
 
 
 
