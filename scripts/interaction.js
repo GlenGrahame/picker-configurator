@@ -2,6 +2,71 @@
 
 import { selections, selectedPositions, selectedIntegrationType, setIntegrationType, resetPositions } from './state.js';
 import { showPage } from './navigation.js';
+// --- Route code helpers ---
+function getRouteState() {
+  return {
+    platform: selections.platform || null,
+    integrate: selections.integrate || null,
+    integrationType: (typeof selectedIntegrationType === 'string' && selectedIntegrationType) || null,
+    sourceAuto: selections.sourceAuto || null,
+    destAuto: selections.sourceDestAuto || null,
+    posSource: selectedPositions?.source || null,
+    posDest: selectedPositions?.destination || null,
+  };
+}
+
+// Compact, deterministic 6-char code (base36 of an FNV-ish hash of a human-readable key)
+function computeRouteCode() {
+  const s = getRouteState();
+  const key = [
+    `P:${s.platform||'-'}`,
+    `I:${s.integrate||'-'}`,
+    `T:${s.integrationType||'-'}`,
+    `SA:${s.sourceAuto||'-'}`,
+    `DA:${s.destAuto||'-'}`,
+    `S:${s.posSource||'-'}`,
+    `D:${s.posDest||'-'}`
+  ].join('|');
+
+  let h = 2166136261 >>> 0;
+  for (let i = 0; i < key.length; i++) {
+    h ^= key.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h.toString(36).slice(-6).toUpperCase(); // e.g. "3F9K2Q"
+}
+
+// Tiny UI badge to show/copy the code
+function ensureRouteBadge() {
+  if (document.getElementById('routeCodeBadge')) return;
+  const el = document.createElement('button');
+  el.id = 'routeCodeBadge';
+  el.style.position = 'fixed';
+  el.style.right = '12px';
+  el.style.bottom = '12px';
+  el.style.padding = '6px 10px';
+  el.style.border = '1px solid #ccc';
+  el.style.background = '#fff';
+  el.style.borderRadius = '8px';
+  el.style.fontSize = '12px';
+  el.style.boxShadow = '0 2px 6px rgba(0,0,0,0.1)';
+  el.style.cursor = 'pointer';
+  el.title = 'Click to copy code';
+  el.onclick = async () => {
+    await navigator.clipboard.writeText(el.textContent.replace('Code: ','').trim());
+    el.textContent = el.textContent + ' ✓';
+    setTimeout(updateRouteBadge, 800);
+  };
+  document.body.appendChild(el);
+}
+
+function updateRouteBadge() {
+  ensureRouteBadge();
+  const code = computeRouteCode();
+  window.__routeCode = code; // expose for debugging/overrides later
+  const el = document.getElementById('routeCodeBadge');
+  if (el) el.textContent = `Code: ${code}`;
+}
 
 export function selectPlatform(type) {
     selections['platform'] = type;
@@ -11,7 +76,8 @@ export function selectPlatform(type) {
     document.querySelectorAll('.image-option').forEach(opt => {
         opt.classList.remove('selected');
     });
-
+updateRouteBadge();
+}
     // Add "selected" class to the clicked one
     document.getElementById(`${type.toLowerCase()}-option`).classList.add('selected');
 }
@@ -22,7 +88,8 @@ export function initInteractions() {
             selectOption(box.textContent.trim().toLowerCase(), 'integrate');
         });
     });
-
+updateRouteBadge();
+}
     document.querySelectorAll('#integrationTypePage .image-option').forEach(opt => {
         opt.addEventListener('click', () => {
             selectIntegration(opt.dataset.type);
@@ -57,7 +124,8 @@ export function selectOption(value, group) {
             box.classList.add('selected');
         }
     });
-
+updateRouteBadge();
+}
     if (group === 'integrate') {
         document.getElementById('integrationDecisionNext').disabled = false;
     }
@@ -70,7 +138,8 @@ export function handleIntegrationNext() {
         showPage('sourceAutomationPage');
     }
 }
-
+updateRouteBadge();
+}
 export function selectIntegration(type) {
     setIntegrationType(type);
     document.querySelectorAll('#integrationTypePage .image-option').forEach(opt => {
@@ -81,7 +150,8 @@ export function selectIntegration(type) {
     });
     document.getElementById("integrationTypeNext").disabled = false;
 }
-
+updateRouteBadge();
+}
 export function showNextFromIntegrationType() {
     if (["source", "destination", "both"].includes(selectedIntegrationType)) {
         showPositionSelectionPage();
@@ -89,7 +159,8 @@ export function showNextFromIntegrationType() {
         showPage("optionsPage");
     }
 }
-
+updateRouteBadge();
+}
 export function showPositionSelectionPage() {
     showPage("positionSelectionPage");
     resetPositions();
@@ -113,7 +184,8 @@ export function showPositionSelectionPage() {
         box.onclick = () => handlePositionSelect(box.id);
     });
 }
-
+updateRouteBadge();
+}
 export function handlePositionSelect(id) {
     const isSource = (id === 'left' || id === 'rear-left');
     const isDestination = (id === 'right' || id === 'rear-right');
@@ -133,7 +205,8 @@ export function handlePositionSelect(id) {
 
     document.getElementById('positionNext').disabled = !valid;
 }
-
+updateRouteBadge();
+}
 export function handlePositionNext() {
     if (selectedIntegrationType === 'destination') {
         showPage('sourceAutomationPage');
@@ -143,7 +216,8 @@ export function handlePositionNext() {
         showPage('optionsPage');
     }
 }
-
+updateRouteBadge();
+}
 export function selectSourceAutoOption(value) {
     selections['sourceAuto'] = value;
     const boxes = document.querySelectorAll('[data-group="sourceAuto"] .option-box');
@@ -152,7 +226,8 @@ export function selectSourceAutoOption(value) {
     document.getElementById('sourceAutoNext').disabled = false;
     document.getElementById('sourceImage').src = value === 'yes' ? 'Images/K6-Trey.png' : 'Images/K6-only.png';
 }
-
+updateRouteBadge();
+}
 export function handleSourceAutoNext() {
     const choice = selections['sourceAuto'];
 
@@ -166,7 +241,8 @@ export function handleSourceAutoNext() {
         }
     }
 }
-
+updateRouteBadge();
+}
 export function selectDestinationAutomation(value) {
     selections['sourceDestAuto'] = value;
     const boxes = document.querySelectorAll('[data-group="sourceDestAuto"] .option-box');
@@ -185,15 +261,19 @@ export function selectDestinationAutomation(value) {
         image.src = 'Images/K6-only.png';
     }
 }
-
+updateRouteBadge();
+}
 export function handleSourceDestAuto() {
     showPage('optionsPage');
 }
-
+updateRouteBadge();
+}
 export function handleDualDestinationToggle() {
     const checkbox = document.getElementById('dualDestToggle');
     const image = document.getElementById('destinationImage');
     image.src = checkbox.checked ? 'Images/Hive2.png' : 'Images/Hive1.png';
+}
+updateRouteBadge();
 }
 
 
